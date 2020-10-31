@@ -5,8 +5,14 @@ import torch
 
 import horovod.torch as hvd
 from horovod.torch.mpi_ops import Average
+
+#  allreduce_async_ ----> A function that performs asynchronous in-place averaging or summation of the input tensor over all the Horovod processes.
 from horovod.torch.mpi_ops import allreduce_async_
+
+# A function that asynchronously concatenates the input tensor with the same input tensor on all other Horovod processes. The input tensor is not modified.
 from horovod.torch.mpi_ops import allgather_async as allgather_async_
+
+# Synchronizes an asynchronous allreduce, allgather or broadcast operation until it’s completed. Returns the result of the operation.
 from horovod.torch.mpi_ops import synchronize as synchronize_
 
 from dgc.memory import Memory
@@ -58,6 +64,7 @@ class DGCCompressor:
             print("=> initializing dgc compressor")
         for name, param in named_parameters:
             if torch.is_tensor(param):
+                # numel() Returns the total number of elements in the input tensor.
                 numel = param.numel()
                 shape = list(param.size())
             else:
